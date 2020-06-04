@@ -13,9 +13,7 @@ using std::vector;
 //create constructor
 Process::Process(int pid):
 			  pid_(pid),
-			  cmd_(LinuxParser::Command(pid)),
-			  user_(LinuxParser::User(pid)),
-			  ram_(LinuxParser::Ram(Pid()))
+			  user_(LinuxParser::User(pid))
 {};
 
 // TODO: Return this process's ID
@@ -31,7 +29,7 @@ float Process::CpuUtilization() const {
 }
 
 // TODO: Return the command that generated this process
-string Process::Command() { return cmd_ ; }//
+string Process::Command() { return LinuxParser::Command(pid_) ; }//
 
 // TODO: Return this process's memory utilization
 string Process::Ram() { return LinuxParser::Ram(Pid()); }

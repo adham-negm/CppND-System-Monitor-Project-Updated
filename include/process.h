@@ -24,7 +24,6 @@ public:
 private:
 	int pid_;
 	std::string user_;
-	std::string cmd_;
 	std::string ram_;
 	float cpu_;
 	long int uptime_;

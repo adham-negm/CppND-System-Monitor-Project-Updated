@@ -140,19 +140,19 @@ long LinuxParser::Jiffies() {
 long LinuxParser::ActiveJiffies(int pid) {
 	string line;
 	string var;
+	long totaltime;
 	string utime, stime, cutime, cstime;
 	std::ifstream filestream(kProcDirectory + to_string(pid) + kStatFilename);
 	if (filestream.is_open()) {
-		while (std::getline(filestream, line)) {
-			std::istringstream linestream(line);
-			for(int i = 1; i < 14; i++) {
-				linestream >> var; // Stop at 13th token
-			}
-			linestream >> utime >> stime >> cutime >> cstime; // Grab active jiffies
-			long totaltime = stol(utime) + stol(stime) + stol(cutime) + stol(cstime);
-			return totaltime;
+		std::getline(filestream, line);
+		std::istringstream linestream(line);
+		for(int i = 1; i < 14; i++) {
+			linestream >> var; // Stop at 13th token
 		}
+		linestream >> utime >> stime >> cutime >> cstime; // Grab active jiffies
+		totaltime = stol(utime) + stol(stime) + stol(cutime) + stol(cstime);
 	}
+	return totaltime;
 }
 
 // TODO: Read and return the number of active jiffies for the system
@@ -208,8 +208,8 @@ vector<string> LinuxParser::CpuUtilization() {
 	{
 		std::getline(filestream, line);
 
-			std::istringstream linestream(line);
-			linestream >> cpu >> user >> nice >> system >> idle >> iowait >> irq >> softirq >> steal >> guest >> guest_nice;
+		std::istringstream linestream(line);
+		linestream >> cpu >> user >> nice >> system >> idle >> iowait >> irq >> softirq >> steal >> guest >> guest_nice;
 
 
 	}
@@ -340,21 +340,21 @@ string LinuxParser::Uid(int pid) {
 // TODO: Read and return the user associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
 string LinuxParser::User(int pid) {
-	 string line;
-	  string user, x, uid_lhs;
-	  string uid_rhs{LinuxParser::Uid(pid)};
-	  std::ifstream filestream(kPasswordPath);
-	  if (filestream.is_open()) {
-	    while (std::getline(filestream, line)) {
-	      std::replace(line.begin(), line.end(), ':', ' ');
-	      std::istringstream linestream(line);
-	      while (linestream >> user >> x >> uid_lhs) {
-	        if (uid_lhs == uid_rhs) {
-	          return user;
-	        }
-	      }
-	    }
-	  }
+	string line;
+	string user, x, uid_lhs;
+	string uid_rhs{LinuxParser::Uid(pid)};
+	std::ifstream filestream(kPasswordPath);
+	if (filestream.is_open()) {
+		std::getline(filestream, line);
+		std::replace(line.begin(), line.end(), ':', ' ');
+		std::istringstream linestream(line);
+		while (linestream >> user >> x >> uid_lhs) {
+			if (uid_lhs == uid_rhs) {
+				break;
+			}
+		}
+	}
+	return user;
 }
 
 // TODO: Read and return the uptime of a process
