@@ -27,4 +27,5 @@ private:
 	std::string const kernel_;
 };
 
+
 #endif

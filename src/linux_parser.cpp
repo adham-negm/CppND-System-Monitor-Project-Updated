@@ -302,12 +302,14 @@ string LinuxParser::Ram(int pid) {
 			{
 				if (name == "VmSize:")
 				{
+					size = to_string(std::stol(size)/1000);
 
 					return size;
 				}
 			}
 		}
 	}
+	size = to_string(std::stol(size)/1000);
 	return size;
 
 }
@@ -345,13 +347,14 @@ string LinuxParser::User(int pid) {
 	string uid_rhs{LinuxParser::Uid(pid)};
 	std::ifstream filestream(kPasswordPath);
 	if (filestream.is_open()) {
-		std::getline(filestream, line);
-		std::replace(line.begin(), line.end(), ':', ' ');
-		std::istringstream linestream(line);
-		while (linestream >> user >> x >> uid_lhs) {
+		while(std::getline(filestream, line)){
+			std::replace(line.begin(), line.end(), ':', ' ');
+			std::istringstream linestream(line);
+			linestream >> user >> x >> uid_lhs;
 			if (uid_lhs == uid_rhs) {
-				break;
-			}
+					break;
+				}
+
 		}
 	}
 	return user;
